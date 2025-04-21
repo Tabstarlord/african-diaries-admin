@@ -1,0 +1,125 @@
+.notification-page {
+  margin-left: 17%;
+  width: 83%;
+  padding: 2em;
+  box-sizing: border-box;
+  margin-top: -3rem;
+}
+
+.notification-title {
+  font-weight: 600;
+  font-size: 31px;
+  margin-bottom: 2rem;
+  margin-right: 60rem;
+}
+
+.notification-list {
+  background-color: white;
+  border-radius: 6px;
+  padding: 1rem;
+
+}
+
+.notification-item {
+  display: flex;
+  align-items: flex-start;
+  padding: 0.75rem 0;
+  border-bottom: 1px solid #eee;
+}
+
+.notification-item:last-child {
+  border-bottom: none;
+}
+
+.red-dot {
+  width: 6px;
+  height: 6px;
+  background-color: red;
+  border-radius: 4px;
+  margin-right: 10px;
+  margin-top: 10px;
+}
+
+.avatar {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  margin-right: 12px;
+  object-fit: cover;
+}
+
+.text-content p {
+  margin: 0;
+  font-weight: 500;
+  font-size: 13px;
+  color: #000000;
+}
+
+.timestamp {
+  font-weight: 500;
+  font-size: 10px;
+  color: #808080;
+  float: left;
+}
+
+.notification-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-top: 1rem;
+}
+
+.pagination button {
+  border: none;
+  font-size: 1.2rem;
+  padding: 0 10px;
+  cursor: pointer;
+
+}
+
+.pagination button:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.pagination span {
+  font-size: 0.95rem;
+}
+
+.action-buttons {
+  display: flex;
+  gap: 1rem;
+}
+
+.delete-btn {
+  background-color: #e50914;
+  border: none;
+  color: white;
+  padding: 0.6rem 1rem;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: bold;
+}
+
+.mark-read-btn {
+  background-color: #777;
+  border: none;
+  color: white;
+  padding: 0.6rem 1rem;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: bold;
+}
+
+@media screen and (max-width: 768px) {
+  .notification-footer {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1rem;
+  }
+
+  .action-buttons {
+    width: 100%;
+    justify-content: flex-start;
+  }
+}

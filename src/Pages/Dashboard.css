@@ -1,0 +1,157 @@
+/* DASHBOARD WRAPPER */
+.dashboard {
+  margin-left: 17%; /* Leaves room for sidebar */
+  width: 83%;
+  padding: 2rem;
+  box-sizing: border-box;
+  margin-top: -3rem;
+}
+
+/* HEADER */
+.dashboard-header {
+  font-weight: 600;
+  font-size: 31px;
+  margin-bottom: 2rem;
+  margin-right: 60rem;
+}
+
+/* CARDS IN ONE ROW */
+.dashboard-container-1 {
+  display: flex;
+  justify-content: space-between;
+  gap: 1.5rem;
+  margin-bottom: 3rem;
+  flex-wrap: wrap;
+}
+
+/* CARD STYLE */
+.dashboard-card {
+  background-color: #FFFFFE;
+  border-radius: 8px;
+  padding: 1.5rem;
+  flex: 1;
+  min-width: 200px;
+  max-width: 300px;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+/* CARD CONTENT */
+.dashboard-card img {
+  width: 30px;
+  height: auto;
+}
+
+.dashboard-label {
+  font-weight: 500;
+  font-size: 13px;
+}
+
+.dashboard-value {
+  font-weight: 600;
+  font-size: 25px;
+}
+
+.dashboard-refresh {
+  font-size: 10px;
+  color: gray;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.dashboard-refresh img {
+  width: 14px;
+  height: auto;
+}
+
+/* CHART GRID - TWO PER ROW */
+.chart-section {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 2rem;
+}
+
+/* CHART STYLES */
+.chart1,
+.chart2,
+.chart3,
+.chart4 {
+  background-color: #FFFFFE;
+  border-radius: 9.31px;
+  padding: 1.5rem;
+  min-height: 100px;
+}
+.chart1 {
+  background-color: #FFFFFE;
+  border-radius: 9.31px;
+  padding: 1.5rem 2.1rem 1.5rem 1.5rem;
+  height: 400px;
+  width: 632px;
+}
+
+.chart2 {
+  background-color: #FFFFFE;
+  border-radius: 9.31px;
+  padding: 1.5rem;
+  height: 400px;
+  width: 300px;
+}
+.chart-section-2 {
+  display: grid;
+  grid-template-columns: 531px 531px;
+  gap: 1rem;
+  flex-wrap: wrap;
+  padding-top: 2rem;
+}
+
+.chart3,
+.chart4 {
+  background-color: #FFFFFE;
+  border-radius: 9.31px;
+  padding: 1.5rem;
+  height: 200px;
+  width: 475px;
+}
+
+/* CHART HEADERS */
+.chart-header {
+  font-size: 20px;
+  font-weight: 600;
+  opacity: 0.8;
+  margin-bottom: 1rem;
+}
+
+/* RESPONSIVE STYLES */
+@media (max-width: 1024px) {
+  .dashboard-container-1 {
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+
+  .dashboard-card {
+    max-width: 100%;
+    flex: 1 1 45%;
+  }
+
+  .chart-section {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 600px) {
+  .dashboard {
+    margin-left: 0;
+    width: 100%;
+    padding: 1rem;
+  }
+
+  .dashboard-card {
+    flex: 1 1 100%;
+  }
+
+  .chart-section {
+    grid-template-columns: 1fr;
+  }
+}

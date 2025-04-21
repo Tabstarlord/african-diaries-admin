@@ -1,0 +1,93 @@
+.login-container {
+margin-left: 35%;
+width: 60%;
+padding: 2rem;
+box-sizing: border-box;
+margin-top: -1rem;
+}
+
+.login-box {
+  background: #fff;
+  padding: 40px;
+  border-radius: 20px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+  width: 50%;
+  text-align: center;
+}
+
+.login-box h2 {
+  text-align: center;
+  margin-bottom: 24px;
+  font-weight: 600;
+  font-size: 20px;
+}
+
+.login-box label {
+  display: block;
+  margin-bottom: 6px;
+  font-weight: 500;
+  font-size: 16px;
+}
+
+.login-box input[type="email"],
+.login-box input[type="password"],
+.password-wrapper input {
+  width: 100%;
+  padding: 12px -1em;
+  margin-bottom: 16px;
+  border: 1px solid #ccc;
+  border-radius: 10px;
+  font-size: 16px;
+}
+
+.password-wrapper {
+  position: relative;
+}
+
+.toggle-visibility {
+  position: absolute;
+  right: 0.5em;
+  top: 1.9em;
+  cursor: pointer;
+  font-size: 18px;
+}
+
+.options-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 24px;
+  font-size: 12px;
+}
+
+.options-row input {
+  margin-left: -15em;
+  font-size: 12px;
+  margin-top: 0.5em;
+}
+.options-row .remember-me {
+  margin-left: -27em;
+  font-size: 12px;
+}
+
+.login-box button {
+  width: 100%;
+  padding: 12px;
+  background-color: green;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 16px;
+  cursor: pointer;
+}
+
+.login-box button:hover {
+  background-color: darkgreen;
+}
+.error {
+  color: red;
+  font-size: 14px;
+  margin-bottom: 16px;
+  text-align: center;
+}
+

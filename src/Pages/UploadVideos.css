@@ -1,0 +1,150 @@
+.upload {
+  margin-left: 17%; /* Leaves room for sidebar */
+  width: 83%;
+  padding: 2rem;
+  box-sizing: border-box;
+  margin-top: -3rem;
+}
+.upload-container {
+  max-width: 500px;
+  margin: 10px auto;
+  font-family: sans-serif;
+  color: #333;
+  background-color: #FEFEFE;
+  padding: 5rem;
+  margin-left: 10rem;
+}
+
+.upload-videos-header {
+  font-size: 31px;
+  font-weight: 600;
+  margin-bottom: 2rem;
+  margin-right: 50rem;
+}
+
+.upload-box {
+  border: 2px dashed #4CAF50;
+  padding: 50px 20px;
+  text-align: center;
+  margin-bottom: 20px;
+  border-radius: 10px;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+}
+
+.upload-icon {
+  margin: 0;
+  width: 50px;
+  height: 50px;
+  margin-top: 2em;
+}
+
+.upload-icon img {
+  width: 200%;
+  height: auto;
+  padding-left: 3rem;
+  margin-top: -3em;
+}
+
+.browse {
+  color: #4CAF50;
+  font-weight: bold;
+}
+
+.format-text {
+  color: #aaa;
+  font-size: 12px;
+}
+
+.uploading-box input {
+  width: 100%;
+  padding: 10px;
+  border: 2px solid #4CAF50;
+  border-radius: 5px;
+  margin-bottom: 10px;
+}
+
+.progress-bar {
+  height: 5px;
+  background: #ccc;
+  border-radius: 10px;
+  overflow: hidden;
+  margin-top: 5px;
+}
+
+.progress {
+  width: 100%;
+  height: 100%;
+  background: #4CAF50;
+  animation: progress 2s linear;
+}
+
+@keyframes progress {
+  from { width: 0%; }
+  to { width: 100%; }
+}
+
+.form-group {
+  margin-bottom: 20px;
+}
+
+.form-group label {
+  display: block;
+  margin-bottom: 5px;
+  text-align: left;
+  font-weight: 500;
+  font-size: 13px;
+}
+
+input {
+  width: 100%;
+  padding: 10px 0em;
+  border: 2px solid #008000;
+  border-radius: 5px;
+}
+
+ select {
+  width: 100%;
+  padding: 10px;
+  border: 2px solid #008000;
+  border-radius: 5px;
+}
+
+.tags-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 10px;
+  padding-top: 2em;
+  position: relative;
+  right: 3em;
+}
+
+.tag {
+  padding: 8px 12px;
+  border: 1px solid #008000;
+  border-radius: 20px;
+  background: #fff;
+  cursor: pointer;
+}
+
+.tag.selected {
+  background: #008000;
+  color: white;
+}
+
+.upload-btn {
+  width: 100%;
+  padding: 15px;
+  background: #008000;
+  color: white;
+  font-weight: 500;
+  font-size: 16px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}

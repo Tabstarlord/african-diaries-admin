@@ -1,0 +1,70 @@
+.navbar {
+  font-family: 'DM Sans', sans-serif;
+  width: 100%;
+  background-color: #fff;
+  overflow: hidden;
+  box-sizing: border-box;
+}
+.navbar .navbar-container {
+  display: flex;
+  justify-content: center;
+  gap: 4.3em;
+  padding-left: 232px;
+  padding-top: 1em;
+  padding-bottom: 1em;
+}
+.navbar-brand {
+  font-size: 20px;
+  font-weight: 600;
+  line-height: 100%;
+}
+.navbar-brand-wave {
+  position: relative;
+  top: 0.2em;
+  
+}
+.navbar-brand-p {
+  font-size: 13px;
+  font-weight: 400;
+  position: relative;
+  right: 18.5em;
+  top: 2em;
+}
+.navbar-search {
+  position: relative;
+  right: 8em;
+}
+.navbar-search-btn {
+  position: absolute;
+  top: 0.8em;
+  left: 1em;
+}
+.navbar-search-close {
+  position: absolute;
+  top: 0.9em;
+  right: 1em;
+}
+.navbar-input {
+  width: 320px;
+  height: 40px;
+  padding-left: 2.8em;
+  padding-bottom: 0.5em;
+  border: 0.5px solid #000;
+}
+.navbar-date-calendar {
+  width: 146px;
+  height: 40px;
+  border: 0.5px solid #A3AED0;
+  padding: 4px 10px;
+}
+.navbar-date {
+  font-size: 10px;
+  font-weight: 500;
+  position: relative;
+  bottom: 15px;
+}
+.navbar-calendar {
+  position: relative;
+  top: 4px;
+  right: 5px;
+}
