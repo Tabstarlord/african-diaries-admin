@@ -25,6 +25,7 @@ function Login() {
   };
 
   return (
+    <div className='login-wrapper'>
     <div className="login-container">
       <form className="login-box" onSubmit={handleLogin}>
         <h2>Log in</h2>
@@ -63,6 +64,7 @@ function Login() {
 
         <button type="submit">Login</button>
       </form>
+    </div>
     </div>
   );
 }

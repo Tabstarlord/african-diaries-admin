@@ -1,6 +1,6 @@
 
 import './App.css';
-import { Routes, Route } from 'react-router-dom';
+import { Routes, Route, useLocation } from 'react-router-dom';
 import Navbar from './Components/Navbar';
 import SIdebar from './Components/Sidebar'
 import Dashboard from './Pages/Dashboard'
@@ -15,10 +15,14 @@ import Login from './Pages/Login';
 
 
 function App() {
+  const location = useLocation();
+  const isLoginPage = location.pathname === '/';
+
   return (
     <div className="App">
-      <Navbar />
-      <SIdebar />
+      {!isLoginPage && <Navbar />}
+      {!isLoginPage && <SIdebar />}
+      
 
       <Routes>
       <Route path='/' element={<Login />} />
