@@ -1,9 +1,10 @@
 .upload {
   margin-left: 17%; /* Leaves room for sidebar */
   width: 83%;
-  padding: 2rem;
+  padding: 0.25rem;
   box-sizing: border-box;
-  margin-top: -3rem;
+  margin-top: -1.5rem;
+  padding-right: 1.5rem;
 }
 .upload-container {
   max-width: 500px;
@@ -11,15 +12,14 @@
   font-family: sans-serif;
   color: #333;
   background-color: #FEFEFE;
-  padding: 5rem;
-  margin-left: 10rem;
+  padding: 5rem 20rem;
 }
 
 .upload-videos-header {
   font-size: 31px;
   font-weight: 600;
-  margin-bottom: 2rem;
-  margin-right: 50rem;
+  margin-bottom: 3rem;
+  margin-right: 56rem;
 }
 
 .upload-box {
@@ -117,11 +117,13 @@ input {
 .tags-grid {
   display: flex;
   flex-wrap: wrap;
-  gap: 10px;
+  gap: 5px;
   margin-top: 10px;
   padding-top: 2em;
   position: relative;
   right: 3em;
+  padding-right: -2rem;
+  
 }
 
 .tag {

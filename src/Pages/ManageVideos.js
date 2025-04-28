@@ -4,6 +4,11 @@ import view from '../Assets/view-Icon.png';
 import view2 from '../Assets/view-Icon2.png';
 import view3 from '../Assets/view-Icon3.png';
 import active from '../Assets/Icon.png';
+import del2 from '../Assets/m_delete.png'
+import del from '../Assets/mi_delete.png'
+import edit from '../Assets/edit-2.png'
+import archive from '../Assets/archive.png'
+import publish from '../Assets/Vector.png'
 
 const initialVideos = [
   { id: 1, title: 'Video A', category: 'Trans', views: '124k', likes: '124k', uploadDate: 'Today' },
@@ -21,6 +26,9 @@ const ManageVideos = () => {
   const [filterCategory, setFilterCategory] = useState('All');
   const [showModal, setShowModal] = useState(false);
   const [videoToDelete, setVideoToDelete] = useState(null);
+  const [showEditModal, setShowEditModal] = useState(false);
+const [videoToEdit, setVideoToEdit] = useState(null);
+
   const itemsPerPage = 10;
 
   const parseCount = (str) => {
@@ -55,21 +63,10 @@ const ManageVideos = () => {
   const confirmDelete = () => {
     const updated = videos.filter(v => v.id !== videoToDelete);
     setVideos(updated);
-    showAlert(`1 Video Deleted Successfully`);
+    showAlert(`Deleted Successfully`);
     setShowModal(false);
     setVideoToDelete(null);
   };
-  
-
-  const handleArchiveSelected = (ids = selectedIds) => {
-    setVideosToArchive(ids);
-    setShowArchiveModal(true);
-  };
-
-  const [archivedVideos, setArchivedVideos] = useState([]);
-const [selectedArchived, setSelectedArchived] = useState([]);
-const [showArchivedModal, setShowArchivedModal] = useState(false);
-
 
   const confirmArchive = () => {
     setVideos(prev =>
@@ -77,12 +74,28 @@ const [showArchivedModal, setShowArchivedModal] = useState(false);
         videosToArchive.includes(video.id) ? { ...video, archived: true } : video
       )
     );
-    showAlert(`${videosToArchive.length} Video${videosToArchive.length > 1 ? 's' : ''} Archived Successfully`);
+    showAlert(`Archived Successfully`);
     setVideosToArchive([]);
     setSelectedIds([]);
     setShowArchiveModal(false);
   };
   
+
+  
+
+  const [archivedVideos, setArchivedVideos] = useState([]);
+const [selectedArchived, setSelectedArchived] = useState([]);
+const [showArchivedModal, setShowArchivedModal] = useState(false);
+
+
+ 
+  
+  const handleBulkDelete = () => {
+    const toDelete = selectedArchived.length;
+    setArchivedVideos(prev => prev.filter(v => !selectedArchived.includes(v.id)));
+    setSelectedArchived([]);
+    showAlert(`${toDelete} Video${toDelete > 1 ? 's' : ''} Deleted Successfully`);
+  };
   
   
 
@@ -129,17 +142,23 @@ const handleBulkPublish = () => {
   setSelectedArchived([]);
 };
 
-const handleDelete = (id) => {
-  setArchivedVideos(prev => prev.filter(v => v.id !== id));
-  showAlert("Video Deleted Successfully");
+const handleEdit = (video) => {
+  setVideoToEdit(video);
+  setShowEditModal(true);
 };
 
-const handleBulkDelete = () => {
-  const toDelete = selectedArchived.length;
-  setArchivedVideos(prev => prev.filter(v => !selectedArchived.includes(v.id)));
-  setSelectedArchived([]);
-  showAlert(`${toDelete} Video${toDelete > 1 ? 's' : ''} Deleted Successfully`);
+const confirmEdit = () => {
+  setVideos(prev =>
+    prev.map(v => (v.id === videoToEdit.id ? videoToEdit : v))
+  );
+  setShowEditModal(false);
+  showAlert('Video Updated Successfully');
 };
+
+
+
+
+
 
 
 
@@ -228,9 +247,24 @@ const handleBulkDelete = () => {
                 <td>{video.likes}</td>
                 <td>{video.uploadDate}</td>
                 <td>
-                  <button title="Edit">✏️</button>
-                  <button onClick={() => handleArchiveSelected([video.id])} title="Archive">🗂️</button>
-                  <button onClick={() => handleDelete(video.id)} title="Delete">🗑️</button>
+                <button onClick={() => handleEdit(video)} title="Edit">
+                  <img src={edit} alt='edit' />
+                </button>
+
+                  <button onClick={() => {
+                  setVideosToArchive([video.id]);
+                  setShowArchiveModal(true);
+                  }} title="Archive">
+                    <img src={archive} alt='archive' />
+                  </button>
+
+                  <button onClick={() => {
+                  setVideoToDelete(video.id);
+                  setShowModal(true);
+                  }} title="Delete">
+                    <img src={del} alt='delete' />
+                  </button>
+
                 </td>
               </tr>
             ))
@@ -247,8 +281,23 @@ const handleBulkDelete = () => {
           <button disabled={currentPage === totalPages} onClick={() => setCurrentPage(p => Math.min(p + 1, totalPages))}>&gt;</button>
         </div>
         <div className="bulk-actions">
-          <button className="delete-btn" onClick={() => selectedIds.forEach(handleDelete)}>Delete Selected 🗑️</button>
-          <button className="archive-btn" onClick={() => handleArchiveSelected()}>Archive Selected 🗂️</button>
+        <button
+        className="delete-btn"
+        onClick={() => {
+        if (selectedIds.length > 0) {
+        setVideoToDelete(selectedIds);
+        setShowModal(true); // or create a bulk delete modal if you want
+        }}}>Delete Selected 
+        <img src={del2} alt='delete' />
+        </button>
+
+          <button className="archive-btn" onClick={() => {
+        if (selectedIds.length > 0) {
+        setVideosToArchive(selectedIds);
+        setShowArchiveModal(true); // or create a bulk delete modal if you want
+        }}}>Archive Selected 
+        <img src={archive} alt='archive' />
+        </button>
 
         </div>
       </footer>
@@ -278,6 +327,44 @@ const handleBulkDelete = () => {
     </div>
   </div>
 )}
+
+{showEditModal && (
+  <div className="modal-backdrop">
+    <div className="modal">
+      <h3>Edit Video</h3>
+      <div className="modal-body">
+        <label>Title:</label>
+        <input
+          type="text"
+          value={videoToEdit.title}
+          onChange={(e) =>
+            setVideoToEdit({ ...videoToEdit, title: e.target.value })
+          }
+        />
+
+        <label>Category:</label>
+        <select
+          value={videoToEdit.category}
+          onChange={(e) =>
+            setVideoToEdit({ ...videoToEdit, category: e.target.value })
+          }
+        >
+          <option value="Trans">Trans</option>
+          <option value="Gay">Gay</option>
+          <option value="Straight">Straight</option>
+        </select>
+
+        {/* Add more fields if you want to edit views, likes, etc */}
+      </div>
+
+      <div className="modal-buttons">
+        <button onClick={() => setShowEditModal(false)} className="cancel">Cancel</button>
+        <button onClick={confirmEdit} className="save">Save Changes</button>
+      </div>
+    </div>
+  </div>
+)}
+
 
 {showArchivedModal && (
   <div className="modal-overlay">
@@ -315,8 +402,8 @@ const handleBulkDelete = () => {
               <td>{video.likes}</td>
               <td>{video.uploadDate}</td>
               <td>
-                <button onClick={() => handlePublish(video.id)}>🔁</button>
-                <button onClick={() => handleArchivedDelete(video.id)}>🗑️</button>
+                <button onClick={() => handlePublish(video.id)}></button>
+                <button onClick={() => handleArchivedDelete(video.id)}></button>
 
               </td>
             </tr>
@@ -325,8 +412,8 @@ const handleBulkDelete = () => {
       </table>
 
       <div className="modal-footer">
-        <button className="danger" onClick={handleBulkDelete}>Delete Selected</button>
-        <button className="publish" onClick={handleBulkPublish}>Publish Selected</button>
+        <button className="danger" onClick={handleBulkDelete}>Delete Selected <img src={del2} alt='publish' /></button>
+        <button className="publish" onClick={handleBulkPublish}>Publish Selected <img src={publish} alt='publish' /></button>
       </div>
     </div>
   </div>

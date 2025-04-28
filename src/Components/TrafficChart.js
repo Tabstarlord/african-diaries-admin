@@ -4,7 +4,7 @@ import { useEffect, useMemo, useRef, useState } from 'react';
 
 ChartJS.register(ArcElement, Tooltip);
 
-const DoughnutChart = () => {
+const TrafficChart = () => {
   const chartRef = useRef(null);
 
   // UseMemo to memoize `labels` and `solidColors` to avoid unnecessary re-renders
@@ -67,12 +67,12 @@ const DoughnutChart = () => {
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start' }}>
-      <h1 style={{ fontSize: '14px', marginBottom: '8px' }}>Traffic by Location</h1>
+      <h1 style={{ fontSize: '14px', marginBottom: '20px', marginTop: '-0.5rem' }}>Traffic by Location</h1>
       <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-        <div style={{ width: '120px', height: '120px' }}>
+        <div style={{ width: '180px', height: '180px' }}>
           <Doughnut ref={chartRef} data={chartData} options={options} />
         </div>
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '18px' }}>
           {labels.map((label, index) => (
             <div
               key={index}
@@ -80,18 +80,18 @@ const DoughnutChart = () => {
                 display: 'flex',
                 justifyContent: 'space-between',
                 alignItems: 'center',
-                fontSize: '10px',
-                width: '120px',
+                fontSize: '14px',
+                width: '160px',
               }}
             >
-              <div style={{ display: 'flex', alignItems: 'center' }}>
+              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '15px' }}>
                 <div
                   style={{
                     width: '10px',
                     height: '10px',
                     backgroundColor: index === 0 ? '#00000099' : solidColors[index - 1],
                     borderRadius: '50%',
-                    marginRight: '6px',
+                    marginRight: '2px',
                   }}
                 />
                 <span>{label}</span>
@@ -106,4 +106,4 @@ const DoughnutChart = () => {
   );
 };
 
-export default DoughnutChart;
+export default TrafficChart;

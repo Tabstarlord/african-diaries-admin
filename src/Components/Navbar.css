@@ -8,7 +8,7 @@
 .navbar .navbar-container {
   display: flex;
   justify-content: center;
-  gap: 4.3em;
+  gap: 5.3em;
   padding-left: 232px;
   padding-top: 1em;
   padding-bottom: 1em;
@@ -27,12 +27,12 @@
   font-size: 13px;
   font-weight: 400;
   position: relative;
-  right: 18.5em;
+  right: 20em;
   top: 2em;
 }
 .navbar-search {
   position: relative;
-  right: 8em;
+  right: 12em;
 }
 .navbar-search-btn {
   position: absolute;
@@ -56,6 +56,8 @@
   height: 40px;
   border: 0.5px solid #A3AED0;
   padding: 4px 10px;
+  position: relative;
+  right: 2rem;
 }
 .navbar-date {
   font-size: 10px;
@@ -67,4 +69,96 @@
   position: relative;
   top: 4px;
   right: 5px;
+}
+
+@media screen and (max-width: 768px) {
+  .navbar .navbar-container {
+    display: flex;
+    justify-content: center;
+    gap: 5em;
+  
+  }
+  .navbar-brand {
+    font-size: 16px;
+    font-weight: 600;
+    text-wrap: nowrap;
+    margin-left: 8rem;
+    position: relative;
+    left: 2rem;
+  }
+  .navbar-brand-wave {
+    position: relative;
+    top: 0.5em;
+    
+  }
+  .navbar-brand-p {
+    font-size: 11px;
+    font-weight: 400;
+   text-wrap: nowrap;
+   right: 12rem;
+  
+  }
+  .navbar-search {
+    right: 15rem;
+    top: 0.3rem;
+  }
+  .navbar-input {
+    width: 15rem;
+  }
+  .navbar-date-calendar{
+    right: 17rem;
+    width: 99px;
+    height: 20px;
+    top: 0.8rem;
+
+  }
+  .navbar-date {
+    font-size: 8px;
+    font-weight: 500;
+    text-wrap: nowrap;
+    position: relative;
+    bottom: 20px;
+    left: -1px;
+  }
+}
+
+@media screen and (max-width: 1024px) {
+
+  .navbar-brand {
+    position: relative;
+    left: 1em;
+    font-size: 10px;
+  }
+  .navbar-brand-wave {
+    position: relative;
+    top: 0.5em;
+    
+  }
+  .navbar-brand-p {
+    font-size: 10px;
+   right: 10.5rem;
+  
+  }
+  .navbar-search {
+    right: 14rem;
+    top: 0.3rem;
+  }
+  .navbar-input {
+    width: 12.5rem;
+  }
+  .navbar-date-calendar{
+    right: 16.6rem;
+    width: 99px;
+    height: 20px;
+    top: 0.8rem;
+
+  }
+  .navbar-date {
+    font-size: 8px;
+    font-weight: 500;
+    text-wrap: nowrap;
+    position: relative;
+    bottom: 20px;
+    left: -1px;
+  }
 }

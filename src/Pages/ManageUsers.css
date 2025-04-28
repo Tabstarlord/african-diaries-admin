@@ -87,6 +87,9 @@
 .user-table td {
   font-size: 0.9rem;
 }
+.user-table input {
+  cursor: pointer;
+}
 
 .reset-btn {
   background: transparent;
@@ -114,16 +117,16 @@
   background: red;
   color: white;
 }
-
+.actions img {
+  padding-left: 0.3rem;
+  position: relative;
+  top: 0.2rem;
+}
 .actions .archive {
-  background: gray;
+  background: #808080;
   color: white;
 }
 
-.actions button:disabled {
-  background: #ccc;
-  cursor: not-allowed;
-}
 
 /* ---------- Pagination ---------- */
 .pagination {

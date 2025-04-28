@@ -9,6 +9,8 @@ import Linechart from '../Components/Linechart';
 import DoughnutChart from '../Components/DoughnutChart';
 import TrafficChart from '../Components/TrafficChart';
 import TrafficByDeviceChart from '../Components/TrafficByDeviceChart';
+import VideoPerformance from '../Components/VideoPerformance';
+import RecentSignUps from '../Components/RecentSignIn';
 
 const hourlyData = [
   { hour: '10am', views: 50 },
@@ -82,6 +84,16 @@ function Dashboard() {
 
           <div className="chart4">
             <TrafficByDeviceChart />
+          </div>
+          </div>
+
+          <div className='chart-section-3'>
+          <div className='chart5'>
+            <VideoPerformance />
+          </div>
+
+          <div className='chart6'>
+            <RecentSignUps />
           </div>
         </div>
       </div>

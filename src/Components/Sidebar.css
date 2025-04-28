@@ -9,110 +9,147 @@
   height: 100%;
   overflow: hidden;
 }
+
 .sidebar-container {
   display: flex;
   flex-direction: column;
   gap: 24px;
   margin-top: 40px;
-  float: left;
   margin-left: 25px;
   text-align: left;
   font-weight: 500;
   font-size: 16px;
 }
+
 .sidebar-logo {
-  position: relative;
-  left: 2em;
-}
-.sidebar-dashboard {
-  position: relative;
-  left: 10px;
-}
-.sidebar-dashboard-img {
-  position: relative;
-  top: 4px;
-  right: 10px;
-}
-.sidebar-upload-videos {
-  position: relative;
-  left: 10px;
-}
-.sidebar-upload-img {
-  position: relative;
-  top: 4px;
-  right: 10px;
-}
-.sidebar-manage-videos {
-  position: relative;
-  left: 10px;
-}
-.sidebar-manage-img {
-  position: relative;
-  top: 4px;
-  right: 10px;
-}
-.sidebar-manage-users {
-  position: relative;
-  left: 10px;
-}
-.sidebar-user-img {
-  position: relative;
-  top: 4px;
-  right: 10px;
-}
-.sidebar-notifications {
-  position: relative;
-  left: 10px;
-}
-.sidebar-notifications-img {
-  position: relative;
-  top: 4px;
-  right: 10px;
-}
-.sidebar-settings {
-  position: relative;
-  left: 10px;
-}
-.sidebar-settings-img {
-  position: relative;
-  top: 4px;
-  right: 10px;
+  margin-left: 20px;
 }
 
+.sidebar-links {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.sidebar-link {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: #000000;
+  text-decoration: none;
+  padding: 10px 10px 10px 0;
+  position: relative;
+  transition: color 0.3s, background-color 0.3s;
+}
+
+/* Icon image inside link */
+.sidebar-icon {
+  width: 20px;
+  height: 20px;
+}
+
+/* When active */
+.sidebar-link.active {
+  color: #008000;
+  font-weight: bold;
+}
+
+/* Small bar on right side for active link */
+.sidebar-link.active::after {
+  content: '';
+  position: absolute;
+  right: 0;
+  top: 8px;
+  bottom: 8px;
+  width: 4px;
+  background-color: #008000;
+  border-radius: 4px;
+}
+
+/* Profile section */
 .sidebar-profile {
-  position: relative;
-  top: 9.6em;
+  position: absolute;
+  bottom: 20px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
 }
-.sidebar-profile-2 {
-  position: relative;
-  top: 6.5em;
+
+.sidebar-profile-dp {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
 }
+
 .sidebar-profile-user {
   font-weight: 600;
   font-size: 12px;
-  position: relative;
-  bottom: 20px;
-  left: 10px;
 }
+
 .sidebar-profile-logout {
-  position: relative;
-  left: 30px;
-  bottom: 8px;
+  width: 16px;
+  height: 16px;
+  cursor: pointer;
 }
+
 .sidebar-profile-2 {
+  position: absolute;
+  bottom: 5px;
+  left: 60px;
   display: flex;
-  position: relative;
-  left: 52px;
-  bottom: 52px;
+  align-items: center;
+  gap: 5px;
 }
+
 .sidebar-profile-2-link {
-  width: 11.92px;
-  height: 11.92px;
-  position: relative;
-  top: 10px;
-  right: 5px;
+  width: 12px;
+  height: 12px;
 }
+
 .sidebar-profile-2-email {
   font-weight: 500;
   font-size: 9px;
+}
+
+@media screen and (max-width: 1024px) {
+  .sidebar-container {
+    font-size: 9px;
+    text-wrap: nowrap;
+  }
+  .sidebar-logo-img {
+    width: 5rem;
+    position: relative;
+    right: 1.5rem;
+  }
+  .sidebar-links {
+    position: relative;
+    right: 1rem;
+  }
+  .sidebar-link.active::after {
+    margin-right: -1rem;
+  }
+  .sidebar-profile {
+    position: absolute;
+    right: 0rem;
+  }
+  .sidebar-profile-dp {
+    width: 1rem;
+    height: 1rem;
+  }
+  .sidebar-profile-user {
+    font-size: 7px;
+  }
+  .sidebar-profile-logout {
+    width: 0.8rem;
+    height: 0.8rem;
+    position: relative;
+    right: 0.3rem;
+  }
+  .sidebar-profile-2 {
+    position: absolute;
+    left: 1rem;
+  }
+  .sidebar-profile-2-email {
+    font-size: 7px;
+  }
 }

@@ -2,11 +2,12 @@ import React, { useState } from 'react';
 import '../Pages/UploadVideos.css'
 import uploadicon from '../Assets/Upload icon.png'
 
-const subCategories = [
-  "Group Sex", "Big Ass", "Milf", "Big Cock", "Boobs", "Orgy",
+const tags = [
+  "Amatuer", "Anal", "BDSM", "Bi", "Big Ass", "Orgy",
   "Creampie", "Gangbang", "Big Tits", "Black Men", "Big Dick",
-  "Shemale", "Gay", "Anal Sex", "BBW", "Fisting", "Blowjob",
-  "Boobs", "Cum", "Boobs", "Lesbian", "Cougar", "Lesbian"
+  "Blonde", "Gay", "Cumshot", "Hardcore", "Milf", "Blow job",
+  "Solo", "Squirting", "Straight", "Student", "Teacher", "Trans",
+  "Boobs", "Cum", "Boobs", "Lesbian", "Cougar", "Wanking"
 ];
 
 const VideoUpload = () => {
@@ -100,7 +101,7 @@ const VideoUpload = () => {
       <div className="form-group">
         <label>Sub Category</label>
         <div className="tags-grid">
-          {subCategories.map((tag, index) => (
+          {tags.map((tag, index) => (
             <button
               key={index}
               className={`tag ${selectedTags.includes(tag) ? 'selected' : ''}`}

@@ -6,6 +6,10 @@ import del from '../Assets/mi_delete.png'
 import archive from '../Assets/Icon.png'
 import filter from '../Assets/system-uicons_filtering.png'
 import './ManageUsers.css'
+import archive2 from '../Assets/archive.png'
+import del2 from '../Assets/m_delete.png'
+
+
 
 function ManageUsers() {
   const [selectedUsers, setSelectedUsers] = useState([]);
@@ -70,11 +74,11 @@ const [showAlert, setShowAlert] = useState(false);
     <div className="modal">
       <div className="modal-content">
         <h3>{type === 'delete' ? 'Delete' : 'Archive'} selected users?</h3>
-        <p>This action cannot be undone.</p>
-        <div className="actions">
-          <button onClick={onClose}>Cancel</button>
+        <p> This can't be undone. Are you sure you want to proceed?</p>
+        <div className="modal-buttons">
+          <button className="cancel" onClick={onClose}>Cancel</button>
           <button
-            className={type === 'delete' ? 'delete' : 'archive'}
+            className="delete"
             onClick={() => {
               // Remove selected users (fake action)
               setSelectedUsers([]);
@@ -188,6 +192,7 @@ const [showAlert, setShowAlert] = useState(false);
           disabled={selectedUsers.length === 0}
         >
           Delete Selected
+          <img src={del2} alt='delete' />
         </button>
         <button
           className="archive"
@@ -195,6 +200,7 @@ const [showAlert, setShowAlert] = useState(false);
           disabled={selectedUsers.length === 0}
         >
           Archive Selected
+          <img src={archive2} alt='archive' />
         </button>
       </div>
 

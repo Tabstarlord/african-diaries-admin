@@ -24,17 +24,17 @@ const TrafficByDeviceChart = () => {
     <div
       style={{
         width: '100%',
-        maxWidth: 570,
-        height: 220,
+        float: 'left',
+        height: 245,
         borderRadius: 12,
         overflow: 'hidden',
-        backgroundColor: '#FFFFFE', // 👈 this is now perfectly flush with chart
+
       }}
     >
       <ResponsiveContainer width="100%" height="100%">
         <BarChart
           data={data}
-          margin={{ top: 40, right: 40, left: 40, bottom: 20 }} // 👈 chart padding inside here
+          margin={{ top: 5, right: -10, left: -15, bottom: 20 }} // 👈 chart padding inside here
         >
           <CartesianGrid strokeDasharray="3 3" vertical={false} horizontal={false} />
           <XAxis dataKey="device" tick={{ fontSize: 14 }} />

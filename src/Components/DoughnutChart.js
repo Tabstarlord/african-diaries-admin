@@ -26,18 +26,19 @@ const DoughnutChart = () => {
   };
 
   const options = {
-    cutout: '70%',
+    cutout: '50%%',
+    maintainAspectRatio: false,
     plugins: {
       legend: {
         position: 'bottom',
         labels: {
           usePointStyle: false,
           PointStyle: 'square',
-          boxWidth: 10,
-          boxHeight: 10,
-          padding: 12,
+          boxWidth: 20,
+          boxHeight: 20,
+          padding: 20,
           font: {
-            size: 10
+            size: 15
           },
           
         },
@@ -53,7 +54,7 @@ const DoughnutChart = () => {
   };
 
   return (
-    <div style={{ maxWidth: '500px', margin: '0 auto', padding: '1rem' }}>
+    <div style={{position: 'relative', width: '90%', height: '90%', margin: '0 auto'}}>
       <Doughnut data={data} options={options} />
       
     </div>
