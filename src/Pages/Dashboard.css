@@ -113,14 +113,27 @@
 .chart4 {
   margin-left: 1rem;
 }
-.chart5, .chart6 {
+.chart5 {
+  background-color: #FFFFFE;
+  border-radius: 9.31px;
+  padding: 2.7rem 2.2rem;
+  height: 200px;
+  width: 475px;
+  max-width: 632px;
+}
+.chart6 {
+  background-color: #FFFFFE;
+  border-radius: 9.31px;
+  padding: 2.7rem 2.2rem;
+  height: 200px;
+  width: 475px;
   max-width: 632px;
 }
 
 .chart-section-3 {
   display: grid;
   grid-template-columns: 531px 531px;
-  gap: 1rem;
+  gap: 2rem;
   flex-wrap: wrap;
   padding-top: 2rem;
 }

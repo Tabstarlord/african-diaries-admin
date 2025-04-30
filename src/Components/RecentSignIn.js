@@ -1,28 +1,39 @@
-// RecentSignUps.js
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
+import supabase from "../supabaseClient"; // adjust if necessary
 import "./RecentSignIn.css";
-import refresh from '../Assets/refresh-2.png'
-import avatar from '../Assets/Avatar.png'
-import avatar2 from '../Assets/Avatar2.png'
-import avatar3 from '../Assets/Avatar3.png'
-
-
-const users = [
-  { name: "Ebri", location: "Enugu, NG", email: "Emmy...ma@gmail.com", time: "12:23:05", avatar: avatar },
-  { name: "Ishang", location: "Lagos, NG", email: "Jane...ma@gmail.com", time: "12:23:05", avatar: avatar2 },
-  { name: "MissBusty", location: "Calabar, NG", email: "Zay...ma@gmail.com", time: "12:23:05", avatar: avatar3 },
-  { name: "BBC Oge", location: "Kaduna, NG", email: "Susk...ma@gmail.com", time: "12:23:05", avatar: avatar2 },
-  { name: "Sexy Kim", location: "Jos, NG", email: "Vera...ma@gmail.com", time: "12:23:05", avatar: avatar },
-];
+import refresh from '../Assets/refresh-2.png';
+import defaultAvatar from '../Assets/Avatar.png';
 
 function RecentSignIn() {
+  const [users, setUsers] = useState([]);
   const [isSpinning, setIsSpinning] = useState(false);
+
+
+
+useEffect(() => {
+  fetchRecentSignups();
+}, []);
+
+const fetchRecentSignups = async () => {
+  const { data, error } = await supabase
+    .from('profile')
+    .select('*')
+    .order('created_at', { ascending: false })
+    .limit(5);
+  
+  if (!error) setUsers(data);
+};
+
 
   const handleRefresh = () => {
     setIsSpinning(true);
-    setTimeout(() => {
-      setIsSpinning(false);
-    }, 1000); // 1 second spin
+    fetchRecentSignups();
+    setTimeout(() => setIsSpinning(false), 1000);
+  };
+
+  const formatTime = (timestamp) => {
+    const date = new Date(timestamp);
+    return date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
   };
 
   return (
@@ -41,17 +52,21 @@ function RecentSignIn() {
           <span>Profile</span>
           <span>Location</span>
           <span>Email Address</span>
-          <span>Date</span>
+          <span>Time</span>
         </div>
         {users.map((user, index) => (
           <div className="card-row fade-in" key={index}>
             <div className="profile">
-              <img src={user.avatar} alt={user.name} className="avatar" />
-              <span>{user.name}</span>
+              <img
+                src={user.avatar_url || defaultAvatar}
+                alt={user.username}
+                className="avatar"
+              />
+              <span>{user.username}</span>
             </div>
-            <span>{user.location}</span>
+            <span>{user.location || 'N/A'}</span>
             <span>{user.email}</span>
-            <span>{user.time}</span>
+            <span>{formatTime(user.created_at)}</span>
           </div>
         ))}
       </div>

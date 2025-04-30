@@ -111,6 +111,11 @@
   font-weight: bold;
 }
 
+.action-buttons img {
+  position: relative;
+  top: 0.2rem;
+}
+
 @media screen and (max-width: 768px) {
   .notification-footer {
     flex-direction: column;

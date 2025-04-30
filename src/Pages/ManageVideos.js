@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import supabase from '../supabaseClient';
 import './ManageVideos.css';
 import view from '../Assets/view-Icon.png';
 import view2 from '../Assets/view-Icon2.png';
@@ -10,17 +11,12 @@ import edit from '../Assets/edit-2.png'
 import archive from '../Assets/archive.png'
 import publish from '../Assets/Vector.png'
 
-const initialVideos = [
-  { id: 1, title: 'Video A', category: 'Trans', views: '124k', likes: '124k', uploadDate: 'Today' },
-  { id: 2, title: 'Video B', category: 'Gay', views: '454k', likes: '454k', uploadDate: 'Today' },
-  { id: 3, title: 'Video C', category: 'Straight', views: '354k', likes: '354k', uploadDate: 'Today' },
-  { id: 4, title: 'Video D', category: 'Trans', views: '234k', likes: '234k', uploadDate: 'Today' },
-  { id: 5, title: 'Video E', category: 'Straight', views: '561k', likes: '561k', uploadDate: 'Today' },
-  { id: 6, title: 'Video F', category: 'Gay', views: '754k', likes: '754k', uploadDate: 'Today' }
-];
+
 
 const ManageVideos = () => {
-  const [videos, setVideos] = useState(initialVideos);
+  const [videos, setVideos] = useState([]);
+  const [loading, setLoading] = useState(true);
+
   const [currentPage, setCurrentPage] = useState(1);
   const [selectedIds, setSelectedIds] = useState([]);
   const [filterCategory, setFilterCategory] = useState('All');
@@ -40,9 +36,12 @@ const [videoToEdit, setVideoToEdit] = useState(null);
   const formatCount = (num) => num >= 1e6 ? (num / 1e6).toFixed(1) + 'M' :
                           num >= 1e3 ? (num / 1e3).toFixed(0) + 'k' : num.toString();
 
-  const filteredVideos = videos.filter(video =>
-    filterCategory === 'All' || video.category === filterCategory
-  );
+                          const filteredVideos = videos.filter(video =>
+                            !video.archived &&
+                            (filterCategory === 'All' || video.category === filterCategory)
+                          );
+                          
+                          
 
   const paginatedVideos = filteredVideos.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
   const totalPages = Math.ceil(filteredVideos.length / itemsPerPage);
@@ -61,12 +60,19 @@ const [videoToEdit, setVideoToEdit] = useState(null);
   };
   
   const confirmDelete = () => {
-    const updated = videos.filter(v => v.id !== videoToDelete);
+    let updated;
+    if (Array.isArray(videoToDelete)) {
+      updated = videos.filter(v => !videoToDelete.includes(v.id));
+    } else {
+      updated = videos.filter(v => v.id !== videoToDelete);
+    }
     setVideos(updated);
-    showAlert(`Deleted Successfully`);
+    showAlert('Deleted Successfully');
     setShowModal(false);
     setVideoToDelete(null);
+    setSelectedIds([]);
   };
+  
 
   const confirmArchive = () => {
     setVideos(prev =>
@@ -155,9 +161,41 @@ const confirmEdit = () => {
   showAlert('Video Updated Successfully');
 };
 
+useEffect(() => {
+  const channel = supabase
+    .channel('videos-updates')
+    .on('postgres_changes', { event: '*', schema: 'public', table: 'videos' }, payload => {
+      console.log('Change received!', payload);
+      // Optionally refetch or patch state here
+    })
+    .subscribe();
+
+  return () => {
+    supabase.removeChannel(channel);
+  };
+}, []);
 
 
 
+useEffect(() => {
+  const fetchVideos = async () => {
+    const { data, error } = await supabase
+      .from('videos')
+      .select('*')
+      .order('upload_date', { ascending: false }); // adjust to your column names
+
+    if (error) console.error(error);
+    else setVideos(data);
+
+    setLoading(false);
+  };
+
+  fetchVideos();
+}, []);
+
+if (loading) {
+  return <div className="loading">Loading videos...</div>;
+}
 
 
 
@@ -402,10 +440,14 @@ const confirmEdit = () => {
               <td>{video.likes}</td>
               <td>{video.uploadDate}</td>
               <td>
-                <button onClick={() => handlePublish(video.id)}></button>
-                <button onClick={() => handleArchivedDelete(video.id)}></button>
+  <button onClick={() => handlePublish(video.id)} title="Publish">
+    <img src={publish} alt='publish' />
+  </button>
+  <button onClick={() => handleArchivedDelete(video.id)} title="Delete">
+    <img src={del} alt='delete' />
+  </button>
+</td>
 
-              </td>
             </tr>
           ))}
         </tbody>

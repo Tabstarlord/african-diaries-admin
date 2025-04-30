@@ -1,53 +1,70 @@
 import { Doughnut } from 'react-chartjs-2';
 import { Chart as ChartJS, ArcElement, Tooltip } from 'chart.js';
 import { useEffect, useMemo, useRef, useState } from 'react';
+import supabase from '../supabaseClient' // adjust path
 
 ChartJS.register(ArcElement, Tooltip);
 
+const countryNames = {
+  NG: 'Nigeria',
+  US: 'United States',
+  GB: 'United Kingdom',
+  GH: 'Ghana',
+  MX: 'Mexico',
+  CA: 'Canada',
+  IN: 'India',
+  // Add more as needed
+};
+
 const TrafficChart = () => {
   const chartRef = useRef(null);
-
-  // UseMemo to memoize `labels` and `solidColors` to avoid unnecessary re-renders
-  const labels = useMemo(() => ['Nigeria', 'Ghana', 'Mexico', 'Other'], []);
   const solidColors = useMemo(() => ['#A8C5DA', '#A1E3CB', '#B1E3FF'], []);
 
-  // Initial dataset
   const [chartData, setChartData] = useState({
-    labels,
-    datasets: [
-      {
-        data: [38.6, 22.5, 30.8, 87],
-        backgroundColor: [], // Will be filled with gradient and solid colors
-        hoverOffset: 8,
-      },
-    ],
+    labels: [],
+    datasets: [{ data: [], backgroundColor: [], hoverOffset: 8 }],
   });
 
   useEffect(() => {
-    const chart = chartRef.current;
-    if (!chart) return;
+    const fetchData = async () => {
+      const { data, error } = await supabase.from('traffic_by_country').select('*');
 
-    const ctx = chart.ctx;
+      if (error) {
+        console.error('Error fetching country traffic data:', error);
+        return;
+      }
 
-    // Create gradient for the first slice
-    const gradient = ctx.createLinearGradient(0, 0, 0, 120);
-    gradient.addColorStop(0, '#000000');
-    gradient.addColorStop(1, '#1C1C1C99');
-    gradient.addColorStop(1, '#00000099');
+      if (!data) return;
 
-    // Combine gradient and solid colors
-    const updatedColors = [gradient, ...solidColors];
+      const total = data.reduce((sum, row) => sum + row.views, 0);
 
-    setChartData((prev) => ({
-      ...prev,
-      datasets: [
-        {
-          ...prev.datasets[0],
-          backgroundColor: updatedColors,
-        },
-      ],
-    }));
-  }, [solidColors, labels]); // ✅ Proper ESLint fix
+      const labels = data.map((row) => countryNames[row.country] || row.country);
+      const percentages = data.map((row) => ((row.views / total) * 100).toFixed(1));
+
+      const chart = chartRef.current;
+      if (!chart) return;
+
+      const ctx = chart.ctx;
+      const gradient = ctx.createLinearGradient(0, 0, 0, 120);
+      gradient.addColorStop(0, '#000000');
+      gradient.addColorStop(1, '#1C1C1C99');
+
+      const backgroundColor = [gradient, ...solidColors.slice(0, percentages.length - 1)];
+
+      setChartData({
+        labels,
+        datasets: [
+          {
+            data: percentages,
+            backgroundColor,
+            hoverOffset: 8,
+          },
+        ],
+      });
+    };
+
+    fetchData();
+  }, [solidColors]);
 
   const options = {
     responsive: true,
@@ -67,13 +84,15 @@ const TrafficChart = () => {
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start' }}>
-      <h1 style={{ fontSize: '14px', marginBottom: '20px', marginTop: '-0.5rem' }}>Traffic by Location</h1>
+      <h1 style={{ fontSize: '16px', fontWeight: '500', marginBottom: '20px', marginTop: '-0.5rem' }}>
+        Traffic by Location
+      </h1>
       <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
         <div style={{ width: '180px', height: '180px' }}>
           <Doughnut ref={chartRef} data={chartData} options={options} />
         </div>
         <div style={{ display: 'flex', flexDirection: 'column', gap: '18px' }}>
-          {labels.map((label, index) => (
+          {chartData.labels.map((label, index) => (
             <div
               key={index}
               style={{
@@ -84,14 +103,16 @@ const TrafficChart = () => {
                 width: '160px',
               }}
             >
-              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '15px' }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '15px' }}>
                 <div
                   style={{
                     width: '10px',
                     height: '10px',
-                    backgroundColor: index === 0 ? '#00000099' : solidColors[index - 1],
+                    backgroundColor:
+                      index === 0
+                        ? '#00000099'
+                        : solidColors[index - 1] || '#ccc',
                     borderRadius: '50%',
-                    marginRight: '2px',
                   }}
                 />
                 <span>{label}</span>
@@ -101,7 +122,6 @@ const TrafficChart = () => {
           ))}
         </div>
       </div>
-      
     </div>
   );
 };

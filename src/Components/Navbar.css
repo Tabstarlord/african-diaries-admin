@@ -8,7 +8,7 @@
 .navbar .navbar-container {
   display: flex;
   justify-content: center;
-  gap: 5.3em;
+  gap: 6.2em;
   padding-left: 232px;
   padding-top: 1em;
   padding-bottom: 1em;
@@ -27,7 +27,7 @@
   font-size: 13px;
   font-weight: 400;
   position: relative;
-  right: 20em;
+  right: 21em;
   top: 2em;
 }
 .navbar-search {
@@ -36,12 +36,12 @@
 }
 .navbar-search-btn {
   position: absolute;
-  top: 0.8em;
-  left: 1em;
+  top: 1em;
+  left: 0.5em;
 }
 .navbar-search-close {
   position: absolute;
-  top: 0.9em;
+  top: 1em;
   right: 1em;
 }
 .navbar-input {
@@ -51,25 +51,98 @@
   padding-bottom: 0.5em;
   border: 0.5px solid #000;
 }
+.search-results {
+  position: absolute;
+  top: 60px; /* adjust based on your search input's position */
+  left: 0;
+  right: 0;
+  background: #fff;
+  border: 1px solid #ccc;
+  max-height: 300px;
+  overflow-y: auto;
+  z-index: 1000;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+  border-radius: 8px;
+  padding: 0.5rem;
+}
+
+.search-results h4 {
+  margin: 10px 0 5px;
+  font-size: 14px;
+  color: #333;
+  padding-left: 10px;
+}
+
+.search-result-item {
+  padding: 10px;
+  cursor: pointer;
+  transition: background 0.2s ease-in-out;
+  border-radius: 4px;
+}
+
+.search-result-item:hover {
+  background: #f2f2f2;
+}
+
+.search-result-item strong {
+  font-weight: 600;
+}
+
+
 .navbar-date-calendar {
-  width: 146px;
-  height: 40px;
+  width: 120px;
+  height: 35px;
   border: 0.5px solid #A3AED0;
-  padding: 4px 10px;
+  padding: 2px 2px;
   position: relative;
   right: 2rem;
 }
-.navbar-date {
-  font-size: 10px;
-  font-weight: 500;
-  position: relative;
-  bottom: 15px;
+
+.navbar-date-picker {
+  padding: 6px 10px;
+  font-size: 14px;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+  cursor: pointer;
 }
-.navbar-calendar {
-  position: relative;
-  top: 4px;
-  right: 5px;
+
+.activity-results {
+  background-color: #f9f9f9;
+  margin: 10px 20px;
+  padding: 12px;
+  border-radius: 6px;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.1);
 }
+
+.activity-results h4 {
+  margin-bottom: 8px;
+}
+
+.activity-results ul {
+  list-style-type: none;
+  padding: 0;
+  margin: 0;
+}
+
+.activity-results li {
+  margin-bottom: 6px;
+}
+
+.date-picker-input {
+  border: none;
+  background: transparent;
+  font-size: 14px;
+  cursor: pointer;
+  padding-left: 8px;
+  margin-top: -0.2rem;
+}
+
+.date-picker-input::-webkit-calendar-picker-indicator {
+  filter: invert(0.5);
+  cursor: pointer;
+  margin-left: -1.2rem;
+}
+
 
 @media screen and (max-width: 768px) {
   .navbar .navbar-container {
