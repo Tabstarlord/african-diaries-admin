@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { supabase } from '../supabaseClient'; // Adjust path as needed
+import supabase from '../supabaseClient';
 import del from '../Assets/m_delete.png'
 import archive from '../Assets/archive.png'
 import './Notifications.css';

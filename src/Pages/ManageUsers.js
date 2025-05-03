@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { supabase } from '../supabaseClient'; // Make sure this path is correct
+import supabase from '../supabaseClient'; // Make sure this path is correct
 import view from '../Assets/view-Icon.png';
 import view2 from '../Assets/view-Icon2.png';
 import view3 from '../Assets/view-Icon3.png';

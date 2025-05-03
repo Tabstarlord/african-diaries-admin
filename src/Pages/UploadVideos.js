@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import supabase from '../supabaseClient'; // Ensure correct path
+import React, { useState, useEffect } from 'react';
+import supabase from '../supabaseClient';
 import '../Pages/UploadVideos.css';
 import uploadicon from '../Assets/Upload icon.png';
 
@@ -8,7 +8,7 @@ const tags = [
   "Creampie", "Gangbang", "Big Tits", "Black Men", "Big Dick",
   "Blonde", "Gay", "Cumshot", "Hardcore", "Milf", "Blow job",
   "Solo", "Squirting", "Straight", "Student", "Teacher", "Trans",
-  "Boobs", "Cum", "Boobs", "Lesbian", "Cougar", "Wanking"
+  "Boobs", "Cum", "Lesbian", "Cougar", "Wanking"
 ];
 
 const VideoUpload = () => {
@@ -17,6 +17,21 @@ const VideoUpload = () => {
   const [selectedTags, setSelectedTags] = useState([]);
   const [fileName, setFileName] = useState('');
   const [uploading, setUploading] = useState(false);
+  const [user, setUser] = useState(null);
+  const [thumbnailFile, setThumbnailFile] = useState(null); // ✅ New state
+
+  useEffect(() => {
+    const fetchUser = async () => {
+      const { data: { user }, error } = await supabase.auth.getUser();
+      if (error) {
+        console.error('Error fetching user:', error.message);
+      } else {
+        console.log("Authenticated user:", user);
+        setUser(user);
+      }
+    };
+    fetchUser();
+  }, []);
 
   const handleTagClick = (tag) => {
     setSelectedTags((prev) =>
@@ -41,13 +56,18 @@ const VideoUpload = () => {
       return;
     }
 
+    if (!user) {
+      alert("You must be logged in to upload.");
+      return;
+    }
+
     setUploading(true);
 
     try {
       const { data, error: storageError } = await supabase
         .storage
         .from('videos')
-        .upload(`videos/${Date.now()}_${file.name}`, file);
+        .upload(`${Date.now()}_${file.name}`, file);
 
       if (storageError) {
         console.error("Upload error:", storageError);
@@ -58,6 +78,25 @@ const VideoUpload = () => {
 
       const videoUrl = `https://mbksobahlnvqnihwvwmj.supabase.co/storage/v1/object/public/videos/${data.path}`;
 
+      // ✅ Upload thumbnail if provided
+      let thumbnailUrl = null;
+
+      if (thumbnailFile) {
+        const { data: thumbData, error: thumbError } = await supabase
+          .storage
+          .from('videos')
+          .upload(`thumbnails/${Date.now()}_${thumbnailFile.name}`, thumbnailFile);
+
+        if (thumbError) {
+          console.error("Thumbnail upload error:", thumbError);
+          alert("Error uploading thumbnail.");
+          setUploading(false);
+          return;
+        }
+
+        thumbnailUrl = `https://mbksobahlnvqnihwvwmj.supabase.co/storage/v1/object/public/videos/${thumbData.path}`;
+      }
+
       const { error: insertError } = await supabase
         .from('videos')
         .insert([
@@ -66,21 +105,24 @@ const VideoUpload = () => {
             category,
             tags: selectedTags,
             video_url: videoUrl,
+            thumbnail_url: thumbnailUrl,
             uploaded_at: new Date().toISOString(),
+            user_id: user.id
           },
         ]);
 
       if (insertError) {
-        console.error("DB insert error:", insertError);
-        alert("Error saving video metadata.");
+        console.error("Insert error details:", insertError);
+        alert(`Error saving video metadata: ${insertError.message}`);
       } else {
         alert("Upload successful!");
         setTitle('');
         setSelectedTags([]);
         setFileName('');
+        setThumbnailFile(null); // ✅ Clear thumbnail state
       }
     } catch (err) {
-      console.error(err);
+      console.error("Unexpected error:", err);
       alert("Unexpected error occurred.");
     } finally {
       setUploading(false);
@@ -137,6 +179,15 @@ const VideoUpload = () => {
               </button>
             ))}
           </div>
+        </div>
+
+        <div className="form-group">
+          <label>Thumbnail Image</label>
+          <input
+            type="file"
+            accept="image/*"
+            onChange={(e) => setThumbnailFile(e.target.files[0])}
+          />
         </div>
 
         <button className="upload-btn" onClick={handleUpload} disabled={uploading}>

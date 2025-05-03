@@ -25,8 +25,9 @@ function App() {
       
 
       <Routes>
+       
       <Route path='/' element={<Login />} />
-        <Route path='/Dashboard' element={<Dashboard />} />
+        <Route path='/Dashboard' element={<Dashboard /> } />
         <Route path='/ManageUsers' element={<ManageUsers />} />
         <Route path='/ManageVideos' element={<ManageVideos />} />
         <Route path='/Notifications' element={<Notifications />} />
