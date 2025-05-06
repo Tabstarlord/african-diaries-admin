@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import supabase from '../supabaseClient';
 import './Login.css';
+import logo from '../Assets/User-favicon.png'
 import icon from '../Assets/show-icon.png';
 
 function Login() {
@@ -36,6 +37,7 @@ function Login() {
       <div className="login-container">
         <form className="login-box" onSubmit={handleLogin}>
           <h2>Log in</h2>
+          <img className='login-logo' src={logo} alt='admin-logo' />
           {error && <p className="error">{error}</p>}
           <label>Email address</label>
           <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} />

@@ -19,9 +19,13 @@ function App() {
   const isLoginPage = location.pathname === '/';
 
   return (
+    <>
+    <h1 className='mobile-not-supported'>Screen Breakpoint not supported. View In Desktop</h1>
     <div className="App">
       {!isLoginPage && <Navbar />}
       {!isLoginPage && <SIdebar />}
+
+      
       
 
       <Routes>
@@ -36,6 +40,7 @@ function App() {
       </Routes>
       
     </div>
+    </>
   );
 }
 

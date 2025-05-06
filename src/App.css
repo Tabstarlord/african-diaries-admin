@@ -5,6 +5,10 @@ body {
   height: auto;
 }
 
+.mobile-not-supported {
+  display: none;
+}
+
 .App {
   margin: auto;
   padding: 0;
@@ -21,4 +25,15 @@ body {
  }
  a:active {
   color: #00B14F;
+ }
+
+ @media only screen and (max-width: 768px) {
+  .App {
+    display: none;
+  }
+  .mobile-not-supported {
+    display: block;
+    text-align: center;
+    font-size: 4rem;
+ }
  }

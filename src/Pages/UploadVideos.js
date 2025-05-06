@@ -15,143 +15,122 @@ const VideoUpload = () => {
   const [title, setTitle] = useState('');
   const [category, setCategory] = useState('Straight');
   const [selectedTags, setSelectedTags] = useState([]);
-  const [fileName, setFileName] = useState('');
+  const [file, setFile] = useState(null);
   const [uploading, setUploading] = useState(false);
   const [user, setUser] = useState(null);
-  const [thumbnailFile, setThumbnailFile] = useState(null); // ✅ New state
 
   useEffect(() => {
     const fetchUser = async () => {
-      const { data: { user }, error } = await supabase.auth.getUser();
+      const { data, error } = await supabase.auth.getUser();
       if (error) {
         console.error('Error fetching user:', error.message);
       } else {
-        console.log("Authenticated user:", user);
-        setUser(user);
+        setUser(data.user);
       }
     };
     fetchUser();
   }, []);
 
-  const handleTagClick = (tag) => {
+  const handleTagToggle = (tag) => {
     setSelectedTags((prev) =>
       prev.includes(tag) ? prev.filter((t) => t !== tag) : [...prev, tag]
     );
   };
 
   const handleFileChange = (e) => {
-    const file = e.target.files[0];
-    if (file) {
-      setFileName(file.name);
-      setUploading(true);
-      setTimeout(() => setUploading(false), 1000);
+    const selected = e.target.files[0];
+    if (selected) {
+      setFile(selected);
     }
   };
 
   const handleUpload = async () => {
-    const file = document.getElementById('file-upload').files[0];
-
     if (!file || !title.trim()) {
-      alert("Please select a file and enter a title.");
+      alert('Please select a video file and enter a title.');
       return;
     }
 
     if (!user) {
-      alert("You must be logged in to upload.");
+      alert('You must be logged in to upload.');
       return;
     }
 
     setUploading(true);
 
     try {
-      const { data, error: storageError } = await supabase
+      const filePath = `${Date.now()}_${file.name}`;
+      const {error: storageError } = await supabase
         .storage
         .from('videos')
-        .upload(`${Date.now()}_${file.name}`, file);
+        .upload(filePath, file);
 
       if (storageError) {
-        console.error("Upload error:", storageError);
-        alert("Error uploading file.");
-        setUploading(false);
-        return;
+        throw new Error(storageError.message);
       }
 
-      const videoUrl = `https://mbksobahlnvqnihwvwmj.supabase.co/storage/v1/object/public/videos/${data.path}`;
+      const videoUrl = `https://mbksobahlnvqnihwvwmj.supabase.co/storage/v1/object/public/videos/${filePath}`;
 
-      // ✅ Upload thumbnail if provided
-      let thumbnailUrl = null;
-
-      if (thumbnailFile) {
-        const { data: thumbData, error: thumbError } = await supabase
-          .storage
-          .from('videos')
-          .upload(`thumbnails/${Date.now()}_${thumbnailFile.name}`, thumbnailFile);
-
-        if (thumbError) {
-          console.error("Thumbnail upload error:", thumbError);
-          alert("Error uploading thumbnail.");
-          setUploading(false);
-          return;
-        }
-
-        thumbnailUrl = `https://mbksobahlnvqnihwvwmj.supabase.co/storage/v1/object/public/videos/${thumbData.path}`;
-      }
-
-      const { error: insertError } = await supabase
-        .from('videos')
-        .insert([
-          {
-            title,
-            category,
-            tags: selectedTags,
-            video_url: videoUrl,
-            thumbnail_url: thumbnailUrl,
-            uploaded_at: new Date().toISOString(),
-            user_id: user.id
-          },
-        ]);
+      const { error: insertError } = await supabase.from('videos').insert([
+        {
+          title,
+          category,
+          tags: selectedTags,
+          video_url: videoUrl,
+          uploaded_at: new Date().toISOString(),
+          user_id: user.id,
+        },
+      ]);
 
       if (insertError) {
-        console.error("Insert error details:", insertError);
-        alert(`Error saving video metadata: ${insertError.message}`);
-      } else {
-        alert("Upload successful!");
-        setTitle('');
-        setSelectedTags([]);
-        setFileName('');
-        setThumbnailFile(null); // ✅ Clear thumbnail state
+        throw new Error(insertError.message);
       }
-    } catch (err) {
-      console.error("Unexpected error:", err);
-      alert("Unexpected error occurred.");
+
+      alert('Upload successful!');
+      setTitle('');
+      setCategory('Straight');
+      setSelectedTags([]);
+      setFile(null);
+    } catch (error) {
+      console.error('Upload failed:', error);
+      alert(`Upload failed: ${error.message}`);
     } finally {
       setUploading(false);
     }
   };
 
   return (
-    <section className='upload'>
+    <section className="upload">
       <h1 className="upload-videos-header">Upload Videos</h1>
       <div className="upload-container">
         <div className="upload-box">
           <label htmlFor="file-upload" className="drag-drop">
-            <div className="upload-icon"><img src={uploadicon} alt='upload' /></div>
+            <div className="upload-icon"><img src={uploadicon} alt="upload" /></div>
             <p>Drag & drop files or <span className="browse">Browse</span></p>
-            <p className="format-text">Supported formats: Mp4, Avi, Webp…</p>
+            <p className="format-text">Supported formats: MP4, AVI, WEBP…</p>
           </label>
-          <input id="file-upload" type="file" onChange={handleFileChange} hidden />
+          <input
+            id="file-upload"
+            type="file"
+            accept="video/*"
+            onChange={handleFileChange}
+            hidden
+          />
         </div>
 
-        {fileName && (
+        {file && (
           <div className="uploading-box">
-            <input type="text" value={fileName} readOnly />
+            <input type="text" value={file.name} readOnly />
             {uploading && <div className="progress-bar"><div className="progress" /></div>}
           </div>
         )}
 
         <div className="form-group">
           <label>Title</label>
-          <input value={title} onChange={(e) => setTitle(e.target.value)} />
+          <input
+            value={title}
+            onChange={(e) => setTitle(e.target.value)}
+            placeholder="Enter video title"
+          />
         </div>
 
         <div className="form-group">
@@ -173,7 +152,7 @@ const VideoUpload = () => {
                 key={index}
                 type="button"
                 className={`tag ${selectedTags.includes(tag) ? 'selected' : ''}`}
-                onClick={() => handleTagClick(tag)}
+                onClick={() => handleTagToggle(tag)}
               >
                 {tag}
               </button>
@@ -181,17 +160,8 @@ const VideoUpload = () => {
           </div>
         </div>
 
-        <div className="form-group">
-          <label>Thumbnail Image</label>
-          <input
-            type="file"
-            accept="image/*"
-            onChange={(e) => setThumbnailFile(e.target.files[0])}
-          />
-        </div>
-
         <button className="upload-btn" onClick={handleUpload} disabled={uploading}>
-          {uploading ? "Uploading..." : "Upload Files"}
+          {uploading ? 'Uploading...' : 'Upload Files'}
         </button>
       </div>
     </section>
