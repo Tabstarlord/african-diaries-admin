@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import supabase from '../supabaseClient';
 import '../Pages/UploadVideos.css';
 import uploadicon from '../Assets/Upload icon.png';
+import { v4 as uuidv4 } from "uuid";
 
 const tags = [
   "Amatuer", "Anal", "BDSM", "Bi", "Big Ass", "Orgy",
@@ -30,73 +31,6 @@ const VideoUpload = () => {
     };
     fetchUser();
   }, []);
-
-  const handleTagToggle = (tag) => {
-    setSelectedTags((prev) =>
-      prev.includes(tag) ? prev.filter((t) => t !== tag) : [...prev, tag]
-    );
-  };
-
-  const handleFileChange = (e) => {
-    const selected = e.target.files[0];
-    if (selected) {
-      setFile(selected);
-    }
-  };
-
-  const handleUpload = async () => {
-    if (!file || !title.trim()) {
-      alert('Please select a video file and enter a title.');
-      return;
-    }
-
-    if (!user) {
-      alert('You must be logged in to upload.');
-      return;
-    }
-
-    setUploading(true);
-
-    try {
-      const filePath = `${Date.now()}_${file.name}`;
-      const {error: storageError } = await supabase
-        .storage
-        .from('videos')
-        .upload(filePath, file);
-
-      if (storageError) {
-        throw new Error(storageError.message);
-      }
-
-      const videoUrl = `https://mbksobahlnvqnihwvwmj.supabase.co/storage/v1/object/public/videos/${filePath}`;
-
-      const { error: insertError } = await supabase.from('videos').insert([
-        {
-          title,
-          category,
-          tags: selectedTags,
-          video_url: videoUrl,
-          uploaded_at: new Date().toISOString(),
-          user_id: user.id,
-        },
-      ]);
-
-      if (insertError) {
-        throw new Error(insertError.message);
-      }
-
-      alert('Upload successful!');
-      setTitle('');
-      setCategory('Straight');
-      setSelectedTags([]);
-      setFile(null);
-    } catch (error) {
-      console.error('Upload failed:', error);
-      alert(`Upload failed: ${error.message}`);
-    } finally {
-      setUploading(false);
-    }
-  };
 
   return (
     <section className="upload">
@@ -141,6 +75,7 @@ const VideoUpload = () => {
             <option>Trans</option>
             <option>Best Videos</option>
             <option>Newest Videos</option>
+            <option>Liked Videos</option>
           </select>
         </div>
 
@@ -166,6 +101,72 @@ const VideoUpload = () => {
       </div>
     </section>
   );
+
+  // --- 🔽 FUNCTIONS BELOW ---
+
+  function handleTagToggle(tag) {
+    setSelectedTags(prev =>
+      prev.includes(tag) ? prev.filter(t => t !== tag) : [...prev, tag]
+    );
+  }
+
+  function handleFileChange(e) {
+    const selected = e.target.files[0];
+    if (selected) setFile(selected);
+  }
+
+  async function handleUpload() {
+    if (!file || !category || !title.trim()) {
+      alert('All fields are required.');
+      return;
+    }
+
+    if (!user) {
+      alert('You must be logged in to upload.');
+      return;
+    }
+
+    setUploading(true);
+
+    try {
+      const videoId = uuidv4();
+      const filePath = `${videoId}/${file.name}`;
+
+      const { error: storageError } = await supabase
+        .storage
+        .from('videos')
+        .upload(filePath, file);
+
+      if (storageError) throw new Error(storageError.message);
+
+      const videoUrl = `https://mbksobahlnvqnihwvwmj.supabase.co/storage/v1/object/public/videos/${filePath}`;
+
+      const { error: insertError } = await supabase.from('videos').insert([
+        {
+          id: videoId,
+          title,
+          category,
+          tags: selectedTags,
+          video_url: videoUrl,
+          uploaded_at: new Date().toISOString(),
+          user_id: user.id,
+        },
+      ]);
+
+      if (insertError) throw new Error(insertError.message);
+
+      alert('Upload successful!');
+      setTitle('');
+      setCategory('Straight');
+      setSelectedTags([]);
+      setFile(null);
+    } catch (error) {
+      console.error('Upload failed:', error);
+      alert(`Upload failed: ${error.message}`);
+    } finally {
+      setUploading(false);
+    }
+  }
 };
 
 export default VideoUpload;
