@@ -1,17 +1,15 @@
 {
   "files": {
-    "main.css": "/african-diaries-admin/static/css/main.740f479b.css",
-    "main.js": "/african-diaries-admin/static/js/main.3cad19b4.js",
+    "main.css": "/african-diaries-admin/static/css/main.9a18976f.css",
+    "main.js": "/african-diaries-admin/static/js/main.064d8998.js",
     "static/js/952.31e4795b.chunk.js": "/african-diaries-admin/static/js/952.31e4795b.chunk.js",
-    "static/media/card2.png": "/african-diaries-admin/static/media/card2.43161cdb6612ce5b9bb6.png",
-    "static/media/card1.png": "/african-diaries-admin/static/media/card1.128e41ed6b71ee055e8c.png",
     "index.html": "/african-diaries-admin/index.html",
-    "main.740f479b.css.map": "/african-diaries-admin/static/css/main.740f479b.css.map",
-    "main.3cad19b4.js.map": "/african-diaries-admin/static/js/main.3cad19b4.js.map",
+    "main.9a18976f.css.map": "/african-diaries-admin/static/css/main.9a18976f.css.map",
+    "main.064d8998.js.map": "/african-diaries-admin/static/js/main.064d8998.js.map",
     "952.31e4795b.chunk.js.map": "/african-diaries-admin/static/js/952.31e4795b.chunk.js.map"
   },
   "entrypoints": [
-    "static/css/main.740f479b.css",
-    "static/js/main.3cad19b4.js"
+    "static/css/main.9a18976f.css",
+    "static/js/main.064d8998.js"
   ]
 }
