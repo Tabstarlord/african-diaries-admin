@@ -1,7 +1,7 @@
 import { Doughnut } from 'react-chartjs-2';
 import { Chart as ChartJS, ArcElement, Tooltip } from 'chart.js';
 import { useEffect, useMemo, useRef, useState } from 'react';
-import supabase from '../supabaseClient' // adjust path
+import supabase from '../supabaseClient';
 
 ChartJS.register(ArcElement, Tooltip);
 
@@ -19,7 +19,6 @@ const countryNames = {
 const TrafficChart = () => {
   const chartRef = useRef(null);
   const solidColors = useMemo(() => ['#A8C5DA', '#A1E3CB', '#B1E3FF'], []);
-
   const [chartData, setChartData] = useState({
     labels: [],
     datasets: [{ data: [], backgroundColor: [], hoverOffset: 8 }],
@@ -27,19 +26,23 @@ const TrafficChart = () => {
 
   useEffect(() => {
     const fetchData = async () => {
-      const { data, error } = await supabase.from('traffic_by_country').select('*');
+      const { data, error } = await supabase
+        .from('traffic_by_country')
+        .select('country, views');
 
       if (error) {
-        console.error('Error fetching country traffic data:', error);
+        console.error('Error fetching traffic data:', error);
         return;
       }
 
-      if (!data) return;
+      if (!data || data.length === 0) return;
 
-      const total = data.reduce((sum, row) => sum + row.views, 0);
+      const totalViews = data.reduce((sum, row) => sum + row.views, 0);
 
-      const labels = data.map((row) => countryNames[row.country] || row.country);
-      const percentages = data.map((row) => ((row.views / total) * 100).toFixed(1));
+      const labels = data.map(row => countryNames[row.country] || row.country);
+      const percentages = data.map(row =>
+        ((row.views / totalViews) * 100).toFixed(1)
+      );
 
       const chart = chartRef.current;
       if (!chart) return;
@@ -72,10 +75,8 @@ const TrafficChart = () => {
     plugins: {
       legend: { display: false },
       tooltip: {
-        bodyFont: { size: 10 },
-        titleFont: { size: 10 },
         callbacks: {
-          label: (context) => `${context.label}: ${context.parsed}%`,
+          label: context => `${context.label}: ${context.parsed}%`,
         },
       },
     },
@@ -85,7 +86,7 @@ const TrafficChart = () => {
   return (
     <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start' }}>
       <h1 style={{ fontSize: '16px', fontWeight: '500', marginBottom: '20px', marginTop: '-0.5rem' }}>
-        Traffic by Location
+        Users by Location
       </h1>
       <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
         <div style={{ width: '180px', height: '180px' }}>
@@ -109,9 +110,7 @@ const TrafficChart = () => {
                     width: '10px',
                     height: '10px',
                     backgroundColor:
-                      index === 0
-                        ? '#00000099'
-                        : solidColors[index - 1] || '#ccc',
+                      index === 0 ? '#00000099' : solidColors[index - 1] || '#ccc',
                     borderRadius: '50%',
                   }}
                 />

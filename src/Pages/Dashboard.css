@@ -211,3 +211,19 @@
  
 }
 
+@media screen and (min-width: 1440px) {
+  .dashboard {
+    margin-left: 16rem;
+  }
+  .dashboard-card{
+    min-width: 100px;
+    max-width: 300px;
+  }
+  .dashboard-header {
+    margin-left: -2.5rem;
+  }
+  .charts {
+    justify-content: center;
+    margin-left: 2rem;
+  }
+}

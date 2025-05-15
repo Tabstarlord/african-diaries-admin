@@ -21,18 +21,20 @@ function ManageUsers() {
 
   const usersPerPage = 20;
 
-  useEffect(() => {
-    fetchUsers();
-  }, []);
+useEffect(() => {
+  fetchUsers();
+}, []);
 
-  const fetchUsers = async () => {
-    const { data, error } = await supabase.from('profile').select('*');
-    if (error) {
-      console.error('Error fetching users:', error);
-    } else {
-      setUsers(data);
-    }
-  };
+const fetchUsers = async () => {
+  const { data, error } = await supabase.rpc('get_all_users');
+  if (error) {
+    console.error('Error fetching users:', error);
+  } else {
+    setUsers(data);
+  }
+};
+
+
 
   const paginatedUsers = users.slice(
     (currentPage - 1) * usersPerPage,
@@ -76,6 +78,7 @@ function ManageUsers() {
     setShowAlert(true);
     setTimeout(() => setShowAlert(false), 3000);
   };
+  
 
   const renderModal = (type, onClose) => (
     <div className="modal">

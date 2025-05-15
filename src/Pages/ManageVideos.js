@@ -16,6 +16,10 @@ import publish from '../Assets/Vector.png'
 const ManageVideos = () => {
   const [videos, setVideos] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [totalViewers, setTotalViewers] = useState(0);
+  const [totalLikes, setTotalLikes] = useState(0);
+    const [totalArchived, setTotalArchived] = useState(0);
+
 
   const [currentPage, setCurrentPage] = useState(1);
   const [selectedIds, setSelectedIds] = useState([]);
@@ -27,14 +31,10 @@ const [videoToEdit, setVideoToEdit] = useState(null);
 
   const itemsPerPage = 10;
 
-  const parseCount = (str) => {
-    const num = parseFloat(str);
-    return str.toLowerCase().includes('k') ? num * 1000 :
-           str.toLowerCase().includes('m') ? num * 1000000 : num;
-  };
+  
+  
 
-  const formatCount = (num) => num >= 1e6 ? (num / 1e6).toFixed(1) + 'M' :
-                          num >= 1e3 ? (num / 1e3).toFixed(0) + 'k' : num.toString();
+  
 
                           const filteredVideos = videos.filter(video =>
                             !video.archived &&
@@ -105,8 +105,7 @@ const [showArchivedModal, setShowArchivedModal] = useState(false);
   
   
 
-  const getTotal = (field) =>
-    videos.reduce((sum, v) => sum + parseCount(v[field]), 0);
+  
 
   const [showArchiveModal, setShowArchiveModal] = useState(false);
 const [videosToArchive, setVideosToArchive] = useState([]);
@@ -177,21 +176,99 @@ useEffect(() => {
 
 
 
+
+
 useEffect(() => {
   const fetchVideos = async () => {
-    const { data, error } = await supabase
-      .from('videos')
-      .select('*')
-      .order('upload_date', { ascending: false }); // adjust to your column names
-
-    if (error) console.error(error);
-    else setVideos(data);
-
-    setLoading(false);
+    setLoading(true);
+    try {
+      const { data, error } = await supabase
+        .from('videos')
+        .select('*') // Fetch all columns for now
+        .order('uploaded_at', { ascending: false });
+  
+      if (error) {
+        console.error('Error fetching videos:', error.message);
+        return;
+      }
+  
+      console.log('Fetched videos:', data);
+  
+      const nonArchived = data.filter(video => video.archived === false || video.archived === null);
+      const archived = data.filter(video => video.archived === true);
+  
+      setVideos(nonArchived);
+      setArchivedVideos(archived);
+    } catch (err) {
+      console.error('Unexpected error fetching videos:', err);
+    } finally {
+      setLoading(false);
+    }
   };
+  
 
   fetchVideos();
 }, []);
+
+
+const fetchTotalViewers = async () => {
+  try {
+    const { data, error } = await supabase
+      .from("videos")
+      .select("view_count");
+
+    if (error) throw error;
+
+    const totalViewers = data.reduce((acc, video) => acc + (video.view_count || 0), 0);
+    setTotalViewers(totalViewers); // Use state to store/display this
+  } catch (error) {
+    console.error("Error fetching total viewers:", error.message);
+  }
+};
+useEffect(() => {
+  fetchTotalViewers();
+}, []);
+
+const fetchTotalLikes = async () => {
+  try {
+    const { data, error } = await supabase
+      .from("videos")
+      .select("likes");
+
+    if (error) throw error;
+
+    const totalLikes = data.reduce((acc, video) => acc + (video.likes || 0), 0);
+    setTotalLikes(totalLikes); // Use state to store/display this
+  } catch (error) {
+    console.error("Error fetching total likes:", error.message);
+  }
+};
+useEffect(() => {
+  fetchTotalLikes();
+}, []);
+
+const fetchTotalArchived = async () => {
+  try {
+    const { data, error } = await supabase
+      .from("videos")
+      .select("archived");
+
+    if (error) throw error;
+
+    const totalArchived = data.reduce((acc, video) => acc + (video.archived || 0), 0);
+    setTotalArchived(totalArchived); // Use state to store/display this
+  } catch (error) {
+    console.error("Error fetching total likes:", error.message);
+  }
+};
+useEffect(() => {
+  fetchTotalArchived();
+}, []);
+
+
+
+
+
 
 if (loading) {
   return <div className="loading">Loading videos...</div>;
@@ -222,19 +299,19 @@ if (loading) {
         <div className="manage-videos-card">
           <img src={view2} alt="Total Viewers" />
           <span className="manage-videos-label">Total Viewers:</span>
-          <span className="manage-videos-value">{formatCount(getTotal('views'))}</span>
+          <span className="manage-videos-value">{totalViewers}</span>
         </div>
 
         <div className="manage-videos-card">
           <img src={view3} alt="Total Likes" />
           <span className="manage-videos-label">Total Likes:</span>
-          <span className="manage-videos-value">{formatCount(getTotal('likes'))}</span>
+          <span className="manage-videos-value">{totalLikes}</span>
         </div>
 
         <div className="manage-videos-card">
           <img src={active} alt="Archived Videos" />
           <span className="manage-videos-label">Archived Videos:</span>
-          <span className="manage-videos-value">{videos.filter(v => v.archived).length}</span>
+          <span className="manage-videos-value">{totalArchived}</span>
         </div>
 
         <select className="filter-dropdown" onChange={(e) => setFilterCategory(e.target.value)} value={filterCategory}>
@@ -281,9 +358,10 @@ if (loading) {
                 </td>
                 <td>{video.title}</td>
                 <td>{video.category}</td>
-                <td>{video.views}</td>
-                <td>{video.likes}</td>
-                <td>{video.uploadDate}</td>
+                <td>{video.view_count ?? 0}</td>
+                <td>{video.likes ?? 0}</td>
+                <td>{new Date(video.uploaded_at).toLocaleDateString()}</td>
+
                 <td>
                 <button onClick={() => handleEdit(video)} title="Edit">
                   <img src={edit} alt='edit' />

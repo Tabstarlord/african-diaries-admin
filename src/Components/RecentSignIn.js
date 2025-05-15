@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import supabase from "../supabaseClient"; // adjust if necessary
+import supabase from "../supabaseClient";
 import "./RecentSignIn.css";
 import refresh from '../Assets/refresh-2.png';
 import defaultAvatar from '../Assets/Avatar.png';
@@ -8,26 +8,25 @@ function RecentSignIn() {
   const [users, setUsers] = useState([]);
   const [isSpinning, setIsSpinning] = useState(false);
 
+  useEffect(() => {
+    fetchRecentSignins();
+    const interval = setInterval(fetchRecentSignins, 15000); // refresh every 15 seconds
+    return () => clearInterval(interval);
+  }, []);
 
-
-useEffect(() => {
-  fetchRecentSignups();
-}, []);
-
-const fetchRecentSignups = async () => {
-  const { data, error } = await supabase
-    .from('profile')
+  const fetchRecentSignins = async () => {
+    const { data, error } = await supabase
+    .from('recent_signins')
     .select('*')
-    .order('created_at', { ascending: false })
     .limit(5);
   
-  if (!error) setUsers(data);
-};
 
+    if (!error) setUsers(data);
+  };
 
   const handleRefresh = () => {
     setIsSpinning(true);
-    fetchRecentSignups();
+    fetchRecentSignins();
     setTimeout(() => setIsSpinning(false), 1000);
   };
 
@@ -39,7 +38,7 @@ const fetchRecentSignups = async () => {
   return (
     <div className="signup-card">
       <div className="card-header">
-        <h2>Recent Sign Up</h2>
+        <h2>Recent Sign In</h2>
         <button 
           className={`refresh-button ${isSpinning ? 'spin' : ''}`} 
           onClick={handleRefresh}
@@ -66,7 +65,7 @@ const fetchRecentSignups = async () => {
             </div>
             <span>{user.location || 'N/A'}</span>
             <span>{user.email}</span>
-            <span>{formatTime(user.created_at)}</span>
+            <span>{formatTime(user.last_sign_in_at)}</span>
           </div>
         ))}
       </div>

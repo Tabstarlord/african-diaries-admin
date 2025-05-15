@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Doughnut } from 'react-chartjs-2';
-import  supabase from '../supabaseClient'; // <-- import your supabase client here
+import supabase from '../supabaseClient';
 import {
   Chart as ChartJS,
   ArcElement,
@@ -16,24 +16,21 @@ const DoughnutChart = () => {
   useEffect(() => {
     const fetchCategoryViews = async () => {
       const { data, error } = await supabase
-        .from('category_views')
-        .select('category, view_count');
+        .rpc('get_category_views'); // assumes you use a Supabase function to group views by category
 
       if (error) {
         console.error('Error fetching category views:', error);
         return;
       }
 
-      // Calculate total views
-      const totalViews = data.reduce((sum, item) => sum + item.view_count, 0);
+      const totalViews = data.reduce((sum, item) => sum + item.total_views, 0);
 
-      // Build chart labels and datasets
       const labels = data.map(item => {
-        const percentage = ((item.view_count / totalViews) * 100).toFixed(1);
+        const percentage = ((item.total_views / totalViews) * 100).toFixed(1);
         return `${item.category} ${percentage}%`;
       });
 
-      const values = data.map(item => item.view_count);
+      const values = data.map(item => item.total_views);
 
       setChartData({
         labels,
@@ -41,7 +38,7 @@ const DoughnutChart = () => {
           {
             data: values,
             backgroundColor: [
-              '#5B93FF', '#FF8F6B', '#FFd66b', '#8AFF8A', '#FF6BCB' // Add more if needed
+              '#5B93FF', '#FF8F6B', '#FFD66B', '#8AFF8A', '#FF6BCB', '#8C52FF'
             ],
             borderWidth: 1
           }
@@ -59,14 +56,10 @@ const DoughnutChart = () => {
       legend: {
         position: 'bottom',
         labels: {
-          usePointStyle: false,
           boxWidth: 20,
-          boxHeight: 20,
           padding: 20,
-          font: {
-            size: 15
-          }
-        },
+          font: { size: 15 }
+        }
       },
       tooltip: {
         callbacks: {
@@ -81,7 +74,7 @@ const DoughnutChart = () => {
   if (!chartData) return <p>Loading chart...</p>;
 
   return (
-    <div style={{position: 'relative', width: '90%', height: '90%', margin: '0 auto'}}>
+    <div style={{ position: 'relative', width: '90%', height: '90%', margin: '0 auto' }}>
       <Doughnut data={chartData} options={options} />
     </div>
   );

@@ -1,10 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import supabase from '../supabaseClient';
 import wave from '../Assets/noto_waving-hand.png';
-
 import search from '../Assets/Search.png';
-
-import './Navbar.css'; // Include the CSS you’ll get next
+import './Navbar.css';
 
 function Navbar() {
   const [searchInput, setSearchInput] = useState('');
@@ -12,6 +10,7 @@ function Navbar() {
   const [selectedDate, setSelectedDate] = useState('');
   const [activities, setActivities] = useState([]);
 
+  // Fetch users and videos based on search input
   useEffect(() => {
     const fetchSearchResults = async () => {
       if (!searchInput.trim()) {
@@ -35,23 +34,33 @@ function Navbar() {
     fetchSearchResults();
   }, [searchInput]);
 
+  // Fetch all activities by selected date
   useEffect(() => {
     const fetchActivitiesByDate = async () => {
-      if (!selectedDate) return;
+      if (!selectedDate) {
+        setActivities([]);
+        return;
+      }
 
-      const { data: viewLogs } = await supabase
-        .from('views')
-        .select('*')
-        .gte('viewed_at', `${selectedDate}T00:00:00`)
-        .lte('viewed_at', `${selectedDate}T23:59:59`);
+      const start = `${selectedDate}T00:00:00`;
+      const end = `${selectedDate}T23:59:59`;
 
-      const { data: logins } = await supabase
-        .from('login_logs')
-        .select('*')
-        .gte('logged_in_at', `${selectedDate}T00:00:00`)
-        .lte('logged_in_at', `${selectedDate}T23:59:59`);
+      const [viewLogsRes, loginLogsRes] = await Promise.all([
+        supabase.from('views').select('video_id, viewed_at, user_id').gte('viewed_at', start).lte('viewed_at', end),
+        supabase.from('login_logs').select('user_id, logged_in_at').gte('logged_in_at', start).lte('logged_in_at', end),
+      ]);
 
-      setActivities([...(viewLogs || []), ...(logins || [])]);
+      const viewLogs = viewLogsRes.data || [];
+      const loginLogs = loginLogsRes.data || [];
+
+      // Combine and sort by time (most recent first)
+      const combined = [...viewLogs, ...loginLogs].sort((a, b) => {
+        const aTime = a.viewed_at || a.logged_in_at;
+        const bTime = b.viewed_at || b.logged_in_at;
+        return new Date(bTime) - new Date(aTime);
+      });
+
+      setActivities(combined);
     };
 
     fetchActivitiesByDate();
@@ -74,7 +83,6 @@ function Navbar() {
             value={searchInput}
             onChange={(e) => setSearchInput(e.target.value)}
           />
-          
         </form>
 
         {searchInput && (results.users.length > 0 || results.videos.length > 0) && (
@@ -91,7 +99,6 @@ function Navbar() {
                 </ul>
               </div>
             )}
-
             {results.videos.length > 0 && (
               <div className="search-category">
                 <h4>Videos</h4>
@@ -105,9 +112,9 @@ function Navbar() {
           </div>
         )}
 
+        {/* DATE PICKER */}
         <div className="navbar-date-calendar">
           <label className="navbar-date">
-           
             <input
               type="date"
               className="date-picker-input"
@@ -118,18 +125,22 @@ function Navbar() {
         </div>
       </div>
 
-      {selectedDate && activities.length > 0 && (
+      {selectedDate && (
         <div className="activity-results">
           <h4>Activities on {selectedDate}</h4>
-          <ul>
-            {activities.map((act, idx) => (
-              <li key={idx}>
-                {act.viewed_at
-                  ? `Viewed Video ID: ${act.video_id} at ${act.viewed_at}`
-                  : `User ID: ${act.user_id} logged in at ${act.logged_in_at}`}
-              </li>
-            ))}
-          </ul>
+          {activities.length > 0 ? (
+            <ul>
+              {activities.map((act, idx) => (
+                <li key={idx}>
+                  {act.viewed_at
+                    ? `User ${act.user_id} viewed video ${act.video_id} at ${new Date(act.viewed_at).toLocaleTimeString()}`
+                    : `User ${act.user_id} logged in at ${new Date(act.logged_in_at).toLocaleTimeString()}`}
+                </li>
+              ))}
+            </ul>
+          ) : (
+            <p>No activity recorded on this day.</p>
+          )}
         </div>
       )}
     </nav>

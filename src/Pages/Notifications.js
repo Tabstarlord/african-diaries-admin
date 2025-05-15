@@ -1,10 +1,11 @@
 import React, { useEffect, useState } from 'react';
 import supabase from '../supabaseClient';
-import del from '../Assets/m_delete.png'
-import archive from '../Assets/archive.png'
+import del from '../Assets/m_delete.png';
+import archive from '../Assets/archive.png';
 import './Notifications.css';
 
 export default function Notifications({ user }) {
+  // State
   const [notifications, setNotifications] = useState([]);
   const [selectedIds, setSelectedIds] = useState([]);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
@@ -12,34 +13,43 @@ export default function Notifications({ user }) {
   const [showArchiveModal, setShowArchiveModal] = useState(false);
   const [alertMessage, setAlertMessage] = useState('');
   const [showAlert, setShowAlert] = useState(false);
-  const perPage = 15;
   const [currentPage, setCurrentPage] = useState(1);
 
-  // Pagination
+  const perPage = 15;
   const totalPages = Math.ceil(notifications.length / perPage);
   const paginatedNotifications = notifications.slice(
     (currentPage - 1) * perPage,
     currentPage * perPage
   );
 
-  // Fetch notifications
+  // Fetch notifications for current user
   useEffect(() => {
     if (!user) return;
 
     const fetchNotifications = async () => {
       const { data, error } = await supabase
         .from('notifications')
-        .select('id, message, created_at, read, actor_id, profiles:actor_id(username, avatar_url)')
+        .select(`
+          id,
+          message,
+          created_at,
+          read,
+          actor_id,
+          profiles:actor_id(username, avatar_url)
+        `)
         .eq('user_id', user.id)
         .order('created_at', { ascending: false });
 
-      if (error) console.error('Fetch error:', error);
-      else setNotifications(data);
+      if (error) {
+        console.error('Fetch error:', error);
+      } else {
+        setNotifications(data);
+      }
     };
 
     fetchNotifications();
 
-    // Real-time subscription
+    // Realtime updates
     const channel = supabase
       .channel('realtime:notifications')
       .on(
@@ -59,13 +69,14 @@ export default function Notifications({ user }) {
     };
   }, [user]);
 
-  // Alert helper
+  // Alert handler
   const showAlertMsg = (msg) => {
     setAlertMessage(msg);
     setShowAlert(true);
     setTimeout(() => setShowAlert(false), 3000);
   };
 
+  // CRUD handlers
   const handleDelete = async () => {
     const { error } = await supabase
       .from('notifications')
@@ -92,12 +103,19 @@ export default function Notifications({ user }) {
     setShowMarkReadModal(false);
   };
 
-  const handleArchive = async () => {
-    // If you had `archived` column, update here
+  const handleArchive = () => {
     showAlertMsg('Archive not yet implemented (no column)');
     setShowArchiveModal(false);
   };
 
+  // Selection toggle
+  const toggleSelect = (id) => {
+    setSelectedIds((prev) =>
+      prev.includes(id) ? prev.filter((item) => item !== id) : [...prev, id]
+    );
+  };
+
+  // Modal renderer
   const renderModal = (type, onConfirm, onClose) => (
     <div className="modal">
       <div className="modal-content">
@@ -120,13 +138,9 @@ export default function Notifications({ user }) {
       <div className="notification-list">
         {paginatedNotifications.map((note) => (
           <div
-            className={`notification-item ${selectedIds.includes(note.id) ? 'selected' : ''}`}
             key={note.id}
-            onClick={() =>
-              setSelectedIds((prev) =>
-                prev.includes(note.id) ? prev.filter((id) => id !== note.id) : [...prev, note.id]
-              )
-            }
+            className={`notification-item ${selectedIds.includes(note.id) ? 'selected' : ''}`}
+            onClick={() => toggleSelect(note.id)}
           >
             {!note.read && <span className="red-dot" />}
             <img
@@ -148,20 +162,35 @@ export default function Notifications({ user }) {
 
       <div className="notification-footer">
         <div className="pagination">
-          <button onClick={() => setCurrentPage((p) => Math.max(p - 1, 1))} disabled={currentPage === 1}>
+          <button
+            onClick={() => setCurrentPage((p) => Math.max(p - 1, 1))}
+            disabled={currentPage === 1}
+          >
             {'<'}
           </button>
           <span>Page {currentPage} of {totalPages}</span>
-          <button onClick={() => setCurrentPage((p) => Math.min(p + 1, totalPages))} disabled={currentPage === totalPages}>
+          <button
+            onClick={() => setCurrentPage((p) => Math.min(p + 1, totalPages))}
+            disabled={currentPage === totalPages}
+          >
             {'>'}
           </button>
         </div>
+
         <div className="action-buttons">
-          <button className='delete-btn' onClick={() => setShowDeleteModal(true)} disabled={selectedIds.length === 0}>
-            Delete Notifications <img src={del} alt='delete' />
+          <button
+            className="delete-btn"
+            onClick={() => setShowDeleteModal(true)}
+            disabled={selectedIds.length === 0}
+          >
+            Delete Notifications <img src={del} alt="delete" />
           </button>
-          <button className='mark-read-btn' onClick={() => setShowMarkReadModal(true)} disabled={selectedIds.length === 0}>
-            Mark as Read <img src={archive} alt='mark as read' />
+          <button
+            className="mark-read-btn"
+            onClick={() => setShowMarkReadModal(true)}
+            disabled={selectedIds.length === 0}
+          >
+            Mark as Read <img src={archive} alt="mark as read" />
           </button>
         </div>
       </div>
